@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ShopZone - Cart</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <style>
+    /* Your existing CSS unchanged */
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', Arial, sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #3A8DFF 0%, #1B3F72 100%);
+      color: #1B2A41;
+      padding: 30px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+      margin-bottom: 30px;
+      user-select: none;
+    }
+    .logo {
+      font-size: 30px;
+      font-weight: 800;
+      color: #1B3F72;
+      letter-spacing: 0.06em;
+    }
+    nav a {
+      color: #1B3F72;
+      text-decoration: none;
+      margin-left: 25px;
+      font-weight: 600;
+      font-size: 16px;
+      transition: color 0.3s ease;
+      user-select: none;
+    }
+    nav a:hover {
+      color: #3A8DFF;
+    }
+    .user-menu {
+      display: flex;
+      align-items: center;
+    }
+    .user-menu i {
+      font-size: 20px;
+      margin-right: 10px;
+      color: #1B3F72;
+    }
+    .user-menu a {
+      color: #1B3F72;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .user-menu a:hover {
+      color: #3A8DFF;
+    }
+    .main-content {
+      width: 100%;
+      max-width: 1200px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+      padding: 30px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      box-sizing: border-box;
+    }
+    h2 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #145397;
+      letter-spacing: 0.04em;
+      user-select: none;
+    }
+    .cart-table {
+      width: 100%;
+      border-radius: 15px;
+      box-shadow: 0 12px 30px rgba(26, 54, 92, 0.15);
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 16px 20px;
+      text-align: left;
+      vertical-align: middle;
+      user-select: none;
+    }
+    th {
+      background: #EEF3FC;
+      color: #145397;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+    tr:nth-child(even) {
+      background: #F8FAFF;
+    }
+    tr:nth-child(odd) {
+      background: #FFFFFF;
+    }
+    .product-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .product-info img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 15px;
+      border: 1px solid #E3E9F6;
+      background: white;
+    }
+    .remove-btn {
+      background: none;
+      border: none;
+      color: #FF5D5D;
+      font-size: 18px;
+      cursor: pointer;
+      transition: color 0.3s;
+      user-select: none;
+    }
+    .remove-btn:hover {
+      color: #FF0000;
+    }
+    .cart-total {
+      text-align: right;
+      margin-top: 20px;
+      font-size: 22px;
+      font-weight: 800;
+      color: #2A80B9;
+      user-select: none;
+    }
+    .checkout-btn {
+      align-self: flex-end;
+      margin-top: 15px;
+      padding: 16px 36px;
+      background-color: #2A80B9;
+      color: white;
+      border: none;
+      border-radius: 15px;
+      font-weight: 700;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    .checkout-btn:hover {
+      background-color: #145397;
+    }
+    footer {
+      width: 100%;
+      max-width: 1200px;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 40px;
+      color: #145397;
+      font-weight: 600;
+      user-select: none;
+    }
+    /* Toast notification style */
+    #toastNotification {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(42, 128, 185, 0.9);
+      color: white;
+      padding: 12px 28px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 16px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 10000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      user-select: none;
+    }
+    #toastNotification.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">ShopZone</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="order history.html">Orders</a>
+      <a href="cart page.html">Cart</a>
+    </nav>
+    <div class="user-menu">
+      <i class="fas fa-user-circle"></i>
+      <a href="#">My Orders</a>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <h2>Your Shopping Cart</h2>
+    <div class="cart-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="cartItemsBody">
+          <!-- Cart items will be dynamically inserted here -->
+        </tbody>
+      </table>
+    </div>
+    <div class="cart-total" id="cartTotal"></div>
+    <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+  </div>
+
+  <footer>
+    &copy; 2025 ShopZone. All rights reserved.
+  </footer>
+
+  <!-- Toast Notification container -->
+  <div id="toastNotification"></div>
+
+  <script>
+  function showToast(message) {
+    const toast = document.getElementById('toastNotification');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const products = [
+      { id: "prod-1001", title: "Laptop", desc: "High performance laptop", price: 1200.00, img: "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcTjXx5CKJldU3rM9G5knz3AzmSEDQ9AnntlYkF7S7W45rmjJVecqzg1YwHVSinFnBp3kjV6vrozBSTHnCPnmYmWl76dHFcK43WZedUMcMjpipFv8Bky0Uw2EP48nxnVkOQAPELfv1AANA&usqp=CAc" },
+      { id: "prod-1002", title: "MobilePhone", desc: "High performance Mobile phone", price: 8000.00, img: "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcRXAmYRqQHO99wkXOhfM01ILpEsz1PRufprDoIapIAKajG1uGN_IqNiFkW-hkvvOZWmBNfmwm9BhNEol4M5YePVGaBpczVVHjecbhJkUWE" },
+      { id: "prod-1003", title: "Wireless Mouse", desc: "Ergonomic wireless mouse with 1600 DPI optical sensor.", price: 25.50, img: "https://m.media-amazon.com/images/I/51cKJlOhorL.jpg" },
+      { id: "prod-1004", title: "Mechanical Keyboard", desc: "Mechanical keyboard with RGB backlight and blue switches.", price: 85.00, img: "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcSllmIQKRYBFTt64rOGNmPg2RwiR7GUkGYdGnOqGoFNChvZvd4N8N1i1yfhsECgpzuP8ZH85goyO0A2IToTNJUelaaSsXF8D_6rCsY9D0E" },
+      { id: "prod-1005", title: "USB-C Hub", desc: "7-in-1 USB-C hub with HDMI, USB 3.0, and SD/microSD card readers.", price: 45.00, img: "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcSiXCCqmNzFaYnkU6T4WDUJUfg35hmmSH1rCNCdHjV7AInQ6zt0o2tGj2fJ7T7ovw9__7rJNBuHrZKRzeFcfy4w-cXB1sDdU3ybkwrvYorLXRdqbWv8jm5BZQ" },
+      { id: "prod-1006", title: "Noise Cancelling Headphones", desc: "Over-ear Bluetooth headphones with active noise cancellation.", price: 199.99, img: "https://m.media-amazon.com/images/I/81s-xD5h8xL._AC_SR230,210_CB1169409_QL70_.jpg" },
+      { id: "prod-1007", title: "1080p HD Webcam", desc: "Full HD webcam with built-in microphone and privacy shutter.", price: 55.75, img: "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTO8z8nOTJm8lzVtGO-gsBvMl5eJr1gSMcVRErZno3aOXxTBIDYwsrJDAd36JGZBP6BFuZRUl382Si90Cv11QQ2M1ImzVQqqBmAexsAbA_1w84RG3vcFYHO" },
+      { id: "prod-1008", title: "Gaming Chair", desc: "Ergonomic gaming chair with adjustable height and lumbar support.", price: 350.00, img: "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcQVA-wRMJgnvUaBGyG3-oAJBKU5E4-gy1eNwiO6nxXQcrSVBt9IbxzGHfzGa2YJOfJP3I3R5fWoKiboQE9PNid2ou9qjGPIsG0dOcuB_qA6SXL3x09M2En1&usqp=CAc" },
+      { id: "prod-1009", title: "27-inch 4K Monitor", desc: "Ultra HD 4K monitor with IPS panel and HDR support.", price: 399.00, img: "" }
+    ];
+
+    const cartItemsBody = document.getElementById('cartItemsBody');
+    const cartTotalElement = document.getElementById('cartTotal');
+
+    let cartItems = [];
+
+    async function fetchCart() {
+      try {
+        const res = await fetch('https://process-order-processing-api-aj6h1h.5sc6y6-3.usa-e2.cloudhub.io/api/customer/cart', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'client_id': 'your-client-id-here',
+            'client_secret': 'your-client-secret-here'
+          }
+        });
+
+        if (res.status === 401) {
+          showToast('Session expired');
+          setTimeout(() => {
+            window.location.href = 'login page.html';
+          }, 3000);
+          return;
+        }
+        if (res.status === 404) {
+      cartItemsBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#145397; font-weight:700;">Your cart is empty</td></tr>';
+      cartTotalElement.textContent = 'Total: ₹0';
+      return;
+    }
+
+        if (!res.ok) throw new Error(`Failed to fetch cart: HTTP ${res.status}`);
+
+        const dataArray = await res.json();
+
+        if (!Array.isArray(dataArray) || dataArray.length === 0) {
+          cartItems = [];
+          renderCart();
+          return;
+        }
+
+        const cartData = dataArray[0];
+
+        if (!cartData.items || cartData.items.length === 0) {
+          cartItems = [];
+          renderCart();
+          return;
+        }
+
+        cartItems = cartData.items.map(item => {
+          const product = products.find(p => p.id === item.product_code);
+          return {
+            id: item.product_code,
+            title: product ? product.title : item.product_code,
+            price: product ? product.price : 0,
+            quantity: item.quantity,
+            img: product ? product.img : ""
+          };
+        });
+
+        renderCart();
+      } catch (error) {
+        cartItemsBody.innerHTML = `<tr><td colspan="5" style="color:red; text-align:center;">Error loading cart: ${error.message}</td></tr>`;
+        cartTotalElement.textContent = '';
+        showToast(`Error loading cart: ${error.message}`);
+      }
+    }
+
+    function renderCart() {
+      cartItemsBody.innerHTML = '';
+
+      if (cartItems.length === 0) {
+        cartItemsBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#145397; font-weight:700;">Your cart is empty</td></tr>';
+        cartTotalElement.textContent = '';
+        return;
+      }
+
+      let total = 0;
+      cartItems.forEach(item => {
+        const subtotal = item.price * item.quantity;
+        total += subtotal;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>
+            <div class="product-info">
+              <img src="${item.img}" alt="${item.title}"/>
+              <span>${item.title}</span>
+            </div>
+          </td>
+          <td>₹${item.price.toLocaleString()}</td>
+          <td>${item.quantity}</td>
+          <td>₹${subtotal.toLocaleString()}</td>
+          <td><button class="remove-btn" data-id="${item.id}" aria-label="Remove ${item.title}"><i class="fas fa-trash-alt"></i></button></td>
+        `;
+        cartItemsBody.appendChild(row);
+      });
+
+      cartTotalElement.textContent = `Total: ₹${total.toLocaleString()}`;
+
+      document.querySelectorAll('.remove-btn').forEach(button => {
+        button.addEventListener('click', async function() {
+          const productId = this.getAttribute('data-id');
+          if (!productId) return;
+
+          if (!confirm('Are you sure you want to remove this item from cart?')) return;
+
+          try {
+            const response = await fetch(`https://process-order-processing-api-aj6h1h.5sc6y6-3.usa-e2.cloudhub.io/api/customer/cart/${productId}`, {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+                'client_id': 'your-client-id-here',
+                'client_secret': 'your-client-secret-here'
+              } 
+            });
+
+            if (!response.ok) {
+              const errText = await response.text();
+              showToast(`Failed to remove product: ${errText}`);
+              return;
+            }
+
+            cartItems = cartItems.filter(item => item.id !== productId);
+            renderCart();
+            showToast('Product removed from cart');
+          } catch (error) {
+            showToast('Error removing product: ' + error.message);
+          }
+        });
+      });
+    }
+
+    function checkout() {
+      if (cartItems.length === 0) {
+        showToast('Your cart is empty. Add some products first!');
+        return;
+      }
+      showToast('Proceeding to checkout...');
+      window.location.href = 'check out page.html';
+    }
+
+    fetchCart();
+    window.checkout = checkout;
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ShopZone - Orders</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', Arial, sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #3A8DFF 0%, #1B3F72 100%);
+      color: #1B2A41;
+      padding: 30px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+      margin-bottom: 30px;
+      user-select: none;
+    }
+    .logo {
+      font-size: 30px;
+      font-weight: 800;
+      color: #1B3F72;
+      letter-spacing: 0.06em;
+    }
+    nav a {
+      color: #1B3F72;
+      text-decoration: none;
+      margin-left: 25px;
+      font-weight: 600;
+      font-size: 16px;
+      transition: color 0.3s ease;
+      user-select: none;
+    }
+    nav a:hover {
+      color: #3A8DFF;
+    }
+    .main-content {
+      width: 100%;
+      max-width: 1200px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+      padding: 30px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      box-sizing: border-box;
+    }
+    h2 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #145397;
+      letter-spacing: 0.04em;
+      user-select: none;
+    }
+    .order {
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(26, 54, 92, 0.15);
+      background: white;
+      padding: 22px 30px;
+    }
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+      user-select: none;
+    }
+    .order-code {
+      font-weight: 700;
+      font-size: 20px;
+      color: #0A2348;
+    }
+    .order-date {
+      color: #516690;
+      font-size: 14px;
+    }
+    .order-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      font-size: 15px;
+      color: #2A80B9;
+      margin-bottom: 18px;
+      user-select: none;
+    }
+    .order-info div {
+      font-weight: 600;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 18px;
+    }
+    th, td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #E3E9F6;
+      text-align: left;
+      font-size: 15px;
+      color: #133e66;
+      user-select: none;
+    }
+    th {
+      background-color: #eef3fc;
+      font-weight: 700;
+    }
+    .total-amount {
+      font-weight: 800;
+      font-size: 18px;
+      color: #2A80B9;
+      text-align: right;
+      user-select: none;
+    }
+    footer {
+      width: 100%;
+      max-width: 1200px;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 40px;
+      color: #145397;
+      font-weight: 600;
+      user-select: none;
+    }
+    @media (max-width: 700px) {
+      .order-header {
+        flex-direction: column;
+        gap: 6px;
+      }
+      table th, table td {
+        font-size: 13px;
+      }
+    }
+    /* Session expired toast */
+    #sessionExpiredToast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(255, 76, 76, 0.9);
+      color: white;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      z-index: 10000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      user-select: none;
+    }
+    #sessionExpiredToast.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">ShopZone</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="order history.html" class="active">Orders</a>
+      <a href="cart page.html">Cart</a>
+    </nav>
+  </header>
+  <div class="main-content">
+    <h2>Your Order History</h2>
+    <div id="ordersContainer"></div>
+  </div>
+
+  <footer>
+    &copy; 2025 ShopZone. All rights reserved.
+  </footer>
+
+  <div id="sessionExpiredToast">Session expired</div>
+
+  <script>
+    function formatDate(isoString) {
+      const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+      const date = new Date(isoString);
+      return date.toLocaleString(undefined, options);
+    }
+
+    function renderOrders(orders) {
+      const container = document.getElementById('ordersContainer');
+      container.innerHTML = '';
+
+      if (!orders || orders.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#145397; font-weight:700;">No orders found.</p>';
+        return;
+      }
+
+      orders.forEach(order => {
+        const orderDiv = document.createElement('div');
+        orderDiv.className = 'order';
+
+        let itemsHTML = `<table>
+          <thead>
+            <tr>
+              <th>Product</th><th>Price (₹)</th><th>Quantity</th><th>Subtotal (₹)</th>
+            </tr>
+          </thead>
+          <tbody>`;
+
+        order.items.forEach(item => {
+          const subtotal = item.price * item.quantity;
+          itemsHTML += `<tr>
+            <td>${item.productName}</td>
+            <td>${item.price.toLocaleString()}</td>
+            <td>${item.quantity}</td>
+            <td>${subtotal.toLocaleString()}</td>
+          </tr>`;
+        });
+
+        itemsHTML += `</tbody></table>`;
+
+        orderDiv.innerHTML = `
+          <div class="order-header">
+            <div class="order-code">Order: ${order.order_code}</div>
+            <div class="order-date">${formatDate(order.created_at)}</div>
+          </div>
+          <div class="order-info">
+            <div>Shipping: ${order.shipping_address}</div>
+            <div>Payment: ${order.payment_method}</div>
+            <div class="total-amount">Total Amount: ₹${order.total_amount.toLocaleString()}</div>
+          </div>
+          ${itemsHTML}
+        `;
+        container.appendChild(orderDiv);
+      });
+    }
+
+    function showSessionExpiredToast() {
+      const toast = document.getElementById('sessionExpiredToast');
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+        // Redirect to login after toast disappears
+        window.location.href = 'login page.html';
+      }, 3000);
+    }
+
+    // Fetch orders from API with required behavior
+    async function fetchOrders() {
+      try {
+        const response = await fetch('https://process-order-processing-api-aj6h1h.5sc6y6-3.usa-e2.cloudhub.io/api/customer/orders', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'client_id': 'your-client-id-here',
+            'client_secret': 'your-client-secret-here'
+          }
+        });
+
+        if (response.status === 404) {
+          const container = document.getElementById('ordersContainer');
+          container.innerHTML = '<p style="text-align:center; color:#145397; font-weight:700;">No orders found.</p>';
+          return;
+        }
+
+        if (response.status === 401) {
+          showSessionExpiredToast();
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch orders: ${response.status} ${response.statusText}`);
+        }
+
+        const orders = await response.json();
+        renderOrders(orders);
+      } catch (error) {
+        const container = document.getElementById('ordersContainer');
+        container.innerHTML = `<p style="color:red; text-align:center;">Error loading orders: ${error.message}</p>`;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchOrders();
+    });
+  </script>
+</body>
+</html>

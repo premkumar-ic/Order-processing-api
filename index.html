@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ShopZone - Products</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+  * {
+    box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', Arial, sans-serif;
+  }
+  body {
+    background: linear-gradient(135deg, #3A8DFF 0%, #1B3F72 100%);
+    padding: 30px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    color: #1B2A41;
+    flex-direction: column;
+    gap: 40px;
+  }
+  main {
+    width: 100%;
+    max-width: 1200px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 20px;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+    padding: 30px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #EEF3FC;
+  }
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+  }
+  nav a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 6px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  nav a:hover {
+    background-color: #0056b3;
+  }
+  #logo {
+    font-size: 36px;
+    font-weight: 700;
+    color: #007bff;
+    text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.2);
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-family: 'Montserrat', sans-serif;
+  }
+  #loginBtn, #logoutBtn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+  }
+  #loginBtn {
+    background-color: #2A80B9;
+    color: white;
+    display: none;
+  }
+  #loginBtn:hover {
+    background-color: #145397;
+  }
+  #logoutBtn {
+    background-color: #e53935;
+    color: white;
+    display: none;
+  }
+  #logoutBtn:hover {
+    background-color: #c62828;
+  }
+  nav a:hover { color: #3A8DFF; }
+  h2 { font-size: 32px; font-weight: 700; color: #145397; letter-spacing: 0.04em; }
+  .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 28px; }
+  .product-card { background: #fff; border-radius: 15px; box-shadow: 0 12px 30px rgba(24, 14, 223, 0.15); cursor: pointer; display: flex; flex-direction: column; transition: transform 0.3s ease, box-shadow 0.3s ease; overflow: hidden; }
+  .product-card:hover { transform: translateY(-8px); box-shadow: 0 25px 50px rgba(10, 14, 240, 0.25); }
+  .product-card img { width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid #E3E9F6; }
+  .product-info { flex-grow: 1; padding: 18px 20px; display: flex; flex-direction: column; justify-content: space-between; }
+  .product-title { font-size: 20px; font-weight: 700; color: #271ad2; margin-bottom: 8px; }
+  .product-desc { font-size: 14px; color: #516690; margin-bottom: 12px; flex-grow: 1; }
+  .product-price { font-size: 18px; font-weight: 800; color: #2A80B9; }
+  footer { text-align: center; padding: 18px; color: #145397; font-weight: 600; border-top: 1px solid #EEF3FC; user-select: none; }
+  /* Modal */
+  .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(27,63,114,0.85); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(8px); }
+  .modal-content { background: #fff; color: #000; padding: 25px; border-radius: 20px; max-width: 480px; width: 90%; box-shadow: 0 14px 80px rgba(27,63,114,0.3); position: relative; }
+  .modal-content img { width: 100%; height: 260px; object-fit: cover; border-radius: 15px; margin-bottom: 15px; }
+  .modal-content h3 { color: #12436F; margin-bottom: 10px; font-size: 26px; }
+  .modal-content .product-price { color: #2A80B9; font-size: 20px; font-weight: 700; margin-bottom: 18px; }
+  .modal-content p { font-size: 15px; color: #424859; margin-bottom: 20px; line-height: 1.4; }
+  .modal-content label { font-weight: 600; color: #12436F; margin-right: 10px; font-size: 15px; }
+  .quantity-container { display: flex; align-items: center; margin-bottom: 20px; gap: 8px; }
+  .modal-content input[type="number"] { width: 70px; padding: 6px 10px; font-size: 16px; border-radius: 6px; border: 1px solid #ccc; color: #1B2A41; }
+  .modal-content button { background-color: #2A80B9; color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 16px; margin-right: 14px; transition: background-color 0.25s ease; }
+  .modal-content button:hover { background-color: #1B567F; }
+  .close-btn { position: absolute; top: 12px; right: 18px; font-size: 26px; cursor: pointer; color: #12436F; font-weight: 900; }
+  .close-btn:hover { color: #2A80B9; }
+  .qty-btn { width: 35px; height: 35px; font-size: 22px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer; display: flex; justify-content: center; align-items: center; line-height: 1; }
+  .qty-btn:active { background: #e1eaff; }
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div id="logo">ShopZone</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="order history.html">Orders</a>
+    <a href="cart page.html" id="navCart">Cart</a>
+  </nav>
+  <button id="loginBtn">Login</button>
+  <button id="logoutBtn">Logout</button>
+</header>
+
+  <h2>Available Products</h2>
+  <div class="products" id="productContainer"></div>
+  <footer>&copy; 2025 ShopZone. All rights reserved.</footer>
+</main>
+
+<!-- Product Modal -->
+<div class="modal" id="productModal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal()">&times;</span>
+    <img id="modalImg" src="" alt="Product image" />
+    <h3 id="modalTitle"></h3>
+    <p class="product-price" id="modalPrice"></p>
+    <p id="modalDesc"></p>
+    <div class="quantity-container">
+      <label for="modalQuantity">Quantity:</label>
+      <button type="button" class="qty-btn" id="quantityDecrement">−</button>
+      <input type="number" id="modalQuantity" value="1" min="1" />
+      <button type="button" class="qty-btn" id="quantityIncrement">+</button>
+    </div>
+    <button id="addToCartBtn">Add to Cart</button>
+    <button id="cancelBtn" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const products = [
+    { id: "prod-1001", title: "Laptop", desc: "High performance laptop", price: 1200.00, img: "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcTjXx5CKJldU3rM9G5knz3AzmSEDQ9AnntlYkF7S7W45rmjJVecqzg1YwHVSinFnBp3kjV6vrozBSTHnCPnmYmWl76dHFcK43WZedUMcMjpipFv8Bky0Uw2EP48nxnVkOQAPELfv1AANA&usqp=CAc" },
+    { id: "prod-1002", title: "MobilePhone", desc: "High performance Mobile phone", price: 8000.00, img: "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcRXAmYRqQHO99wkXOhfM01ILpEsz1PRufprDoIapIAKajG1uGN_IqNiFkW-hkvvOZWmBNfmwm9BhNEol4M5YePVGaBpczVVHjecbhJkUWE" },
+    { id: "prod-1003", title: "Wireless Mouse", desc: "Ergonomic wireless mouse with 1600 DPI optical sensor.", price: 25.50, img: "https://m.media-amazon.com/images/I/51cKJlOhorL.jpg" },
+    { id: "prod-1004", title: "Mechanical Keyboard", desc: "Mechanical keyboard with RGB backlight and blue switches.", price: 85.00, img: "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcSllmIQKRYBFTt64rOGNmPg2RwiR7GUkGYdGnOqGoFNChvZvd4N8N1i1yfhsECgpzuP8ZH85goyO0A2IToTNJUelaaSsXF8D_6rCsY9D0E" },
+    { id: "prod-1005", title: "USB-C Hub", desc: "7-in-1 USB-C hub with HDMI, USB 3.0, and SD/microSD card readers.", price: 45.00, img: "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcSiXCCqmNzFaYnkU6T4WDUJUfg35hmmSH1rCNCdHjV7AInQ6zt0o2tGj2fJ7T7ovw9__7rJNBuHrZKRzeFcfy4w-cXB1sDdU3ybkwrvYorLXRdqbWv8jm5BZQ" },
+    { id: "prod-1006", title: "Noise Cancelling Headphones", desc: "Over-ear Bluetooth headphones with active noise cancellation.", price: 199.99, img: "https://m.media-amazon.com/images/I/81s-xD5h8xL._AC_SR230,210_CB1169409_QL70_.jpg" },
+    { id: "prod-1007", title: "1080p HD Webcam", desc: "Full HD webcam with built-in microphone and privacy shutter.", price: 55.75, img: "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTO8z8nOTJm8lzVtGO-gsBvMl5eJr1gSMcVRErZno3aOXxTBIDYwsrJDAd36JGZBP6BFuZRUl382Si90Cv11QQ2M1ImzVQqqBmAexsAbA_1w84RG3vcFYHO" },
+    { id: "prod-1008", title: "Gaming Chair", desc: "Ergonomic gaming chair with adjustable height and lumbar support.", price: 350.00, img: "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcQVA-wRMJgnvUaBGyG3-oAJBKU5E4-gy1eNwiO6nxXQcrSVBt9IbxzGHfzGa2YJOfJP3I3R5fWoKiboQE9PNid2ou9qjGPIsG0dOcuB_qA6SXL3x09M2En1&usqp=CAc" },
+    { id: "prod-1009", title: "27-inch 4K Monitor", desc: "Ultra HD 4K monitor with IPS panel and HDR support.", price: 399.00, img: "data:image/webp;base64,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"
+}];
+  
+  const container = document.getElementById('productContainer');
+  const loginBtn = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  // Check session storage for login status ('true' or 'false')
+  const loggedIn = sessionStorage.getItem('loggedIn') === 'true';
+
+  // Show/hide login/logout buttons accordingly
+  if (loggedIn) {
+    logoutBtn.style.display = 'inline-block';
+    loginBtn.style.display = 'none';
+  } else {
+    loginBtn.style.display = 'inline-block';
+    logoutBtn.style.display = 'none';
+  }
+
+  loginBtn.addEventListener('click', () => {
+    // Redirect to login page
+    window.location.href = 'login page.html';
+  });
+
+  logoutBtn.addEventListener('click', () => {
+    // Clear login status in sessionStorage
+    sessionStorage.setItem('loggedIn', 'false');
+    // Redirect to login page (or home, as you prefer)
+    window.location.href = 'login page.html';
+  });
+
+  // Render products
+  products.forEach(product => {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.innerHTML = `
+      <img src="${product.img}" alt="${product.title}" />
+      <div class="product-info">
+        <div class="product-title">${product.title}</div>
+        <div class="product-desc">${product.desc}</div>
+        <div class="product-price">₹${product.price.toLocaleString('en-IN')}</div>
+      </div>
+    `;
+    card.addEventListener('click', () => openModal(product));
+    container.appendChild(card);
+  });
+
+  const modal = document.getElementById('productModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalImg = document.getElementById('modalImg');
+  const modalPrice = document.getElementById('modalPrice');
+  const modalDesc = document.getElementById('modalDesc');
+  const modalQuantity = document.getElementById('modalQuantity');
+
+  window.openModal = product => {
+    modalTitle.textContent = product.title;
+    modalImg.src = product.img;
+    modalPrice.textContent = "₹" + product.price.toLocaleString('en-IN');
+    modalDesc.textContent = product.desc;
+    modalQuantity.value = 1;
+    modal.style.display = 'flex';
+  };
+
+  window.closeModal = () => {
+    modal.style.display = 'none';
+  };
+
+  document.getElementById('quantityIncrement').addEventListener('click', () => {
+    modalQuantity.value = Number(modalQuantity.value) + 1;
+  });
+
+  document.getElementById('quantityDecrement').addEventListener('click', () => {
+    if (modalQuantity.value > 1) modalQuantity.value = Number(modalQuantity.value) - 1;
+  });
+
+  document.getElementById('addToCartBtn').addEventListener('click', () => {
+    const quantity = Number(modalQuantity.value);
+    const productId = products.find(p => p.title === modalTitle.textContent)?.id;
+    if (!productId) {
+      alert('Product ID not found');
+      return;
+    }
+    const payload = {
+      items: [{ productId: productId, quantity: quantity }]
+    };
+    const apiEndpoint = 'https://process-order-processing-api-aj6h1h.5sc6y6-3.usa-e2.cloudhub.io/api/customer/cart';
+    fetch(apiEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'client_id': 'your-client-id-here',
+        'client_secret': 'your-client-secret-here'
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(response => {
+      if (!response.ok) throw new Error('Failed to add to cart');
+      return response.json();
+    })
+    .then(data => {
+      alert(`Added ${quantity} x ${modalTitle.textContent} to cart!`);
+      closeModal();
+    })
+    .catch(error => {
+      alert('Error adding to cart: ' + error.message);
+    });
+  });
+
+  window.onclick = function(event) {
+    if (event.target === modal) closeModal();
+  };
+
+  document.getElementById('cancelBtn').addEventListener('click', closeModal);
+});
+</script>
+</body>
+</html>
