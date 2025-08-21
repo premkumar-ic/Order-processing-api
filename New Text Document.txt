@@ -1,1 +1,19 @@
-qwer hlo namaste onekam
+🎯 1. Plan the Structure
+
+Title Slide → Project name, your name, company/university.
+
+Agenda → Key topics you’ll cover.
+
+Introduction / Problem Statement → Why this project is needed.
+
+Objectives → What you want to achieve.
+
+Architecture / Workflow → Diagrams & explanation.
+
+Implementation → Tools, technologies (e.g., MuleSoft, DBeaver, SMTP).
+
+Screenshots / Demo → Show how it works.
+
+Results / Benefits → What value it delivers.
+
+Conclusion / Q&A → Wrap up.
